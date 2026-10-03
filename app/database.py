@@ -33,3 +33,29 @@ class User(Base):
 
     assigned_tasks = relationship("Task", foreign_keys="[Task.assigned_to]", back_populates="assignee")
     created_tasks = relationship("Task", foreign_keys="[Task.created_by]", back_populates="creator")
+
+class School(Base):
+    """Орга"""
+    __tablename__ = "schools"
+    id = Column(Integer, primary_key=True, index = True)
+    name = Column(String, nullable=False)
+    invite_code = Column(String, unique=True, index=True )
+    created_at = Column(DateTime, default=datetime.now(timezone.utc))
+
+    users = relationship("User", back_populates="school")
+    tasks = relationship("Task", back_populates="school")
+
+class Task(Base):
+    """Zadachky"""
+    __tablename__ = "tasks"
+
+    id = Column(Integer, primary_key=True, index = True)
+    school_id = Column(Integer, ForeignKey("schools.id"), nullable=False)
+    title = Column(String, nullable=False)
+    description = Column(String, nullable=False)
+    assigned_to = Column(Integer, ForeignKey("users.id"), nullable=False)
+    created_by = Column(Integer, ForeignKey("users.id"), nullable=False)
+    deadline = Column(DateTime, nullable=False)
+    status = Column(String, default="new")
+    priority = Column(Integer, default="normal")
+    created_at = Column(DateTime, default=datetime.now(timezone.utc))
