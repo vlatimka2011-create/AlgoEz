@@ -1,7 +1,8 @@
 """БД"""
-from sqlalchemy import create_engine, Column, Integer, String, DateTime, Boolean, ForeignKey, Text
+
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey, Text
 from sqlalchemy.orm import sessionmaker, declarative_base, relationship
-from datetime import datetime
+from datetime import datetime, timezone
 
 from app.core.config import config
 
@@ -59,3 +60,23 @@ class Task(Base):
     status = Column(String, default="new")
     priority = Column(Integer, default="normal")
     created_at = Column(DateTime, default=datetime.now(timezone.utc))
+    updated_at = Column(DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
+    completed_at = Column(DateTime, nullable=True)
+    completion_comment = Column(Text, nullable=True)
+
+    school = relationship("School", back_populates="tasks")
+    assignee = relationship("User", foreign_keys=[assigned_to], back_populates="assigned_tasks") # type: ignore
+    creator = relationship("User", foreign_keys=[created_by], back_populates="created_tasks") # type: ignore
+
+    # Функции
+
+def get_db():
+    db = Session()
+    try:
+        yield db
+    finally:
+        db.close()
+
+def init_db():
+    Base.metadata.create_all(bind=engine)
+print("Tablicy ready!")
