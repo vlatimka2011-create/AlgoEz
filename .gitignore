@@ -1,8 +1,23 @@
-.idea/
-__pycache__/
-*.pyc
-venv/
-.venv/
+# Environment
 .env
+.env.*
+!.env.example
+
+# Базы данных
 *.db
 *.sqlite3
+*.db-journal
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# IDE
+.idea/
+.vscode/
+
+# Виртуальное окружение
+venv/
+.venv/
