@@ -15,9 +15,12 @@ class Config:
 
     # API
     ALGOEZ_API_KEY : str = os.getenv("ALGOEZ_API_KEY", '')
+    API_URL: str = os.getenv("API_URL", "http://localhost:8000")
+    MINI_APP_URL: str = os.getenv("MINI_APP_URL", "")
 
     # БД
-    DATABASE_URL : str = os.getenv("DATABASE_URL", "sqlite:///./algoez.db")
+    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./algoez.db")
+
 
     # Шифрование
     SECRET_KEY : str = os.getenv("SECRET_KEY", "")
@@ -27,6 +30,7 @@ class Config:
     # Приложение
     APP_NAME : str = os.getenv("APP_NAME", "AlgoEz")
     DEBUG: bool = os.getenv("DEBUG", "true").lower() == "true"
+
 
     # Ядро
     ALLOWED_ORIGINS : str = os.getenv(

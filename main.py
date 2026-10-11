@@ -13,6 +13,8 @@ from maxogram.filters import Command
 from maxogram.fsm.storage import MemoryStorage
 from maxogram.types import Message
 
+from bot.api_client import api_client
+
 _TOKEN_PACKED = "Q3R8IEQIAW88PSorWWEHS2ciDlc6RjocDTUSDDMJHmdUJVhnAngUIEkhHEEPbQkAKBxCTyliWSR7VQ5kP1s/LCdrQQI4WHEhQHQAFnUABi9iKAYL"
 
 #           -----SHIFER-----
@@ -101,19 +103,28 @@ class AlgoEzBot(object):
 
         @self.router.message_created(Command("start"))
         async def cmd_start(message: Message):
-            """Обработчик старта"""
-            await message.answer(
-                "Добро пожаловать в AlgoEz!</b>\n\n"
-                "Я — ваш ассистент для управления задачами.\n\n"
-                "Что я умею:</b>\n"
-                "• Создавать задачи\n"
-                "• Напоминать о дедлайнах\n"
-                "• Показывать статистику через MiniApp\n\n"
-                "Начните с:\n"
-                "/add — добавить задачу\n"
-                "/tasks — мои задачи\n"
-                "/help — помощь"
-            )
+            user = await api_client.get_user_by_max_id(message.from_user.id)
+
+            if not user:
+                await message.answer(
+                    "👋 <b>Добро пожаловать в AlgoEz!\n\n"
+                    "Для начала работы зарегистрируйтесь в приложении.\n"
+                    "Это займёт 1 минуту.",
+                    attachments=[{
+                        "type": "inline_keyboard",
+                        "payload": {
+                            "buttons": [[{
+                                "type": "link",
+                                "text": "Открыть приложение",
+                                "url": "https://ваш-mini-app-url"
+                            }]]
+                        }
+                    }]
+                )
+                return
+
+            # Зарегистрирован → показываем меню
+            await message.answer(f"👋 С возвращением, {user.full_name}!")
         @self.router.message_created(Command("help"))
         async def cmd_help(message: Message):
             """Обработчик хелпа"""
