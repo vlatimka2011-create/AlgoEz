@@ -74,7 +74,7 @@ async function login() {
         const data = await response.json();
         localStorage.setItem('token', data.access_token);
 
-        console.log('✅ Вход выполнен');
+        console.log('Вход выполнен');
         window.location.href = '/profile.html';
 
     } catch (error) {
