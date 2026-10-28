@@ -36,7 +36,7 @@ class APIClient:
 
     async def get_user_by_max_id(self, max_id: int) -> Optional[dict]:
         """Получить пользователя по max_id"""
-        return await self._request("GET", f"/api/users/by-max-id/{max_id}")
+        return await self._request("GET",  f"/users/by-max-id/{max_id}")
 
     async def get_user_tasks(self, user_id: int) -> Optional[List[dict]]:
         """Получить задачи пользователя"""
@@ -46,5 +46,37 @@ class APIClient:
         """Создать задачу"""
         return await self._request("POST", "/api/tasks", task_data)
 
+    async def complete_task(self, task_id: int):
+        """Отметить задачу выполненной"""
+        return await self._request("POST", f"/tasks/{task_id}/complete")
+
+    @staticmethod
+    async def set_bot_commands(commands: list, token: str):
+        """
+        Установить команды бота через API MAX.
+        token: реальный токен бота.
+        """
+        import aiohttp
+
+        url = "https://platform-api2.max.ru/me/commands"
+        headers = {
+            "Authorization": token,
+            "Content-Type": "application/json"
+        }
+        data = {"commands": commands}
+
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.patch(url, json=data, headers=headers) as response:
+                    if response.status == 200:
+                        print(" Меню команд установлено")
+                        return await response.json()
+                    else:
+                        error_text = await response.text()
+                        print(f" Ошибка установки меню: {response.status} - {error_text}")
+                        return None
+        except Exception as e:
+            print(f" Исключение при установке меню: {e}")
+            return None
 
 api_client = APIClient()

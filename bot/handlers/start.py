@@ -11,7 +11,7 @@ def register_start_handlers(router, mini_app_url: str):
     async def cmd_start(message: Message):
         """Обработчик /start"""
         # Проверяем регистрацию через API
-        user = await api_client.get_user_by_max_id(message.from_user.id)
+        user = await api_client.get_user_by_max_id(message.sender.user_id)
 
         if not user:
             # Не зарегистрирован → отправляем в Mini App
@@ -34,6 +34,6 @@ def register_start_handlers(router, mini_app_url: str):
 
         # Зарегистрирован → приветствие
         await message.answer(
-            f"👋 <b>С возвращением, {user['full_name']}!</b>\n\n"
+            f"С возвращением, {user['full_name']}!</b>\n\n"
             f"Используйте /help для списка команд."
         )
